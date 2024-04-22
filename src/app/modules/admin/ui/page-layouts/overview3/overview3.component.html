@@ -1,0 +1,172 @@
+<div class="flex flex-col flex-auto min-w-0">
+
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 min-w-0">
+            <!-- Breadcrumbs -->
+            <div class="flex flex-wrap items-center font-medium">
+                <a class="whitespace-nowrap text-primary-500" (click)="navigateToTemplatesComponent()">User Templates</a>
+                <div class="flex items-center ml-1 whitespace-nowrap">
+                    <mat-icon
+                        class="icon-size-5 text-secondary"
+                        [svgIcon]="'heroicons_mini:chevron-right'"></mat-icon>
+                    <a class="ml-1 text-primary-500">Documentation</a>
+                </div>
+            </div>
+            <!-- Title -->
+            <div class="mt-2">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    Overview
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex-auto p-6 sm:p-10">
+
+        <div class="prose prose-sm max-w-3xl">
+
+            <!-- Introduction -->
+            <h2>Introduction</h2>
+            <p>This reference architecture shows a microservices application deployed to Azure Kubernetes Service (AKS). It describes a basic
+                 AKS configuration that can be the starting point for most deployments. This article assumes basic knowledge of Kubernetes.
+                 The article focuses mainly on the infrastructure and DevOps considerations of running a microservices architecture on AKS        <p>
+           
+            </p>
+            <!-- <ul>
+                <li>
+                    <p><strong>Route 53 for DNS management and routing traffic to various AWS resources. </strong></p>
+                   
+                </li>
+                <li>
+                    <p><strong>CloudFront for content delivery and caching to improve the performance of web applications.</strong></p>
+                
+                </li>
+                <li>
+                    <p><strong>Internet Gateway to enable communication between the VPC and the internet.</strong></p>
+                   
+                </li>
+                <li>
+                    <p><strong>VPC with public and private subnets spread across two availability zones for isolating resources and managing network traffic.</strong></p>
+                   
+                </li>
+                <li>
+                    <p><strong>NAT Gateways for allowing resources in private subnets to access the internet while maintaining security.</strong></p>
+                   
+                </li>
+                <li>
+                    <p><strong>Elastic Load Balancing (ELB) to distribute incoming traffic across multiple instances or containers for improved availability and fault tolerance.</strong></p>
+                   
+                </li>
+                <li>
+                    <p><strong>Amazon Elastic Kubernetes Service (EKS) for managing containerized applications using Kubernetes.</strong></p>
+                   
+                </li>
+            </ul> -->
+            <p>
+                Components :
+            </p>
+            <ul>
+                <li>
+                    <p><strong>Azure Kubernetes Service (AKS) :
+                    </strong></p>
+                    AKS is a managed Kubernetes cluster hosted in the Azure cloud.
+                     Azure manages the Kubernetes API service, and you only need to manage the agent nodes.  </li>
+                <li>
+                    <p><strong>Virtual network :
+                    </strong></p>
+                    By default, AKS creates a virtual network into which agent nodes are connected. You can create the virtual network first for 
+                    more advanced scenarios,
+                     which lets you control things like subnet configuration, on-premises connectivity, and IP addressing. 
+                </li>
+                <li>
+                    <p><strong>Ingress :
+                    </strong></p>
+                    An ingress server exposes HTTP(S) routes to services inside the cluster.
+                </li>
+                <li>
+                    <p><strong>Azure Load Balancer:
+                    </strong></p>
+                    After creating an AKS cluster, the cluster is ready to use the load balancer. Then, once the NGINX service is deployed, 
+                    the load balancer will be configured with
+                     a new public IP that will front your ingress controller. This way, the load balancer routes internet traffic to the ingress.
+                </li>
+                <li>
+                    <p><strong>External data stores:
+                    </strong></p>
+                    Microservices are typically stateless and write state to external data stores, such as Azure SQL Database or Azure Cosmos DB.
+                </li>
+                <li>
+                    <p><strong>Microsoft Entra ID :
+                    </strong></p>
+                    AKS uses a Microsoft Entra identity to create and manage other Azure resources such as Azure load balancers.
+                     Microsoft Entra ID is also recommended for user authentication in client applications.
+                </li>
+                <li>
+                    <p><strong>Azure Container Registry. :
+                    </strong></p>
+                    Use Container Registry to store private Docker images, which are deployed to the cluster. AKS can authenticate
+                     with Container Registry using its Microsoft Entra identity. AKS doesn't require Azure Container Registry.
+                      You can use other container registries, such as Docker Hub. 
+                    Just ensure your container registry matches or exceeds the service level agreement (SLA) for your workload.
+                </li>
+                <li>
+                    <p><strong>Azure Pipelines :
+                    </strong></p>
+                    Azure Pipelines are part of the Azure DevOps Services and run automated builds,
+                     tests, and deployments. You can also use third-party CI/CD solutions such as Jenkins.
+                </li>
+                <li>
+                    <p><strong>Helm :
+                    </strong></p>
+                    Helm is a package manager for Kubernetes, a way to bundle and generalize Kubernetes objects
+                     into a single unit that can be published, deployed, versioned, and updated.
+                </li>
+                <li>
+                    <p><strong>Azure Monitor :
+                    </strong></p>
+                    Azure Monitor collects and stores metrics and logs, application telemetry, and platform metrics for the Azure services.
+                     Use this data to monitor the application, set up alerts, dashboards, and perform root cause analysis of failures.
+                     Azure Monitor integrates with AKS to collect metrics from controllers, nodes, and containers.
+                </li>
+            </ul>
+            <p>
+                Deployment (CI/CD) considerations :
+            </p>
+            <ul>
+                <li>
+                    <p><strong>Each team can build and deploy the services that it owns independently, without affecting or disrupting other teams. </strong></p>
+                   
+                </li>
+                <li>
+                    <p><strong>Before a new version of a service is deployed to production, it gets deployed to dev/test/QA environments for validation. Quality gates are enforced at each stage.</strong></p>
+                
+                </li>
+                <li>
+                    <p><strong>A new version of a service can be deployed side by side with the previous version.</strong></p>
+                   
+                </li>
+                <li>
+                    <p><strong>Sufficient access control policies are in place.</strong></p>
+                   
+                </li>
+                <li>
+                    <p><strong>For containerized workloads, you can trust the container images that are deployed to production.</strong></p>
+                   
+                </li>
+               
+            </ul>
+           <h2>Conclusion</h2>
+            <p>
+                A microservice is a loosely coupled, independently deployable unit of code. Microservices typically communicate 
+                through well-defined APIs and are discoverable through some form of service discovery. The service should always be reachable even when
+                 the pods move around. The Kubernetes Service object is a natural way to model microservices in Kubernetes.
+
+
+            </p>
+        </div>
+
+    </div>
+
+</div>

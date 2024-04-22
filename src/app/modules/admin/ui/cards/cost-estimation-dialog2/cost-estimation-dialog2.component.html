@@ -1,0 +1,40 @@
+<div class="absolute inset-0 min-w-0 text-center overflow-auto print:overflow-visible" cdkScrollable>
+    <!-- Main -->
+    <div class="inline-block p-6 sm:p-10 text-left print:p-0">
+        <!-- Invoice -->
+        <div class="w-240 p-16 rounded-2xl shadow bg-card print:w-auto print:rounded-none print:shadow-none print:bg-transparent">
+            <!-- Invoice Title -->
+            <div class="text-xl font-semibold text-center mb-8">Cost Estimation</div>
+            <!-- Cost Details -->
+            <div class="grid grid-cols-2 gap-x-4 gap-y-2">
+                <!-- Azure App Service -->
+                <div class="font-medium">Azure App Service:</div>
+                <div>Basic Tier: $55 per month</div>
+                <!-- Azure DNS -->
+                <div class="font-medium">Azure DNS:</div>
+                <div>Hosted DNS Zone: $0.50 per month</div>
+                <!-- Azure SQL Database -->
+                <div class="font-medium">Azure SQL Database:</div>
+                <div>Basic Tier, 1GB: $5 per month</div>
+                <!-- Azure Active Directory -->
+                <div class="font-medium">Azure Active Directory (Azure AD):</div>
+                <div>Free Tier: Free</div>
+                <!-- Azure Monitor -->
+                <div class="font-medium">Azure Monitor:</div>
+                <div>Data Ingestion, Storage: $2.50 per month</div>
+                <!-- Azure Key Vault -->
+                <div class="font-medium">Azure Key Vault:</div>
+                <div>Operations, Storage: $1.50 per month</div>
+            </div>
+            <!-- Total Estimated Monthly Cost -->
+            <div class="mt-8 font-medium">Total Estimated Monthly Cost:</div>
+            <div class="text-2xl">$64.50</div>
+            <!-- Additional Note -->
+            <div class="mt-8 text-sm text-gray-500">
+                This is a simplified example, and actual costs may vary based on usage patterns, service configurations, and regional pricing. It's important to regularly monitor usage and adjust resources as needed to optimize costs. Additionally, consider utilizing Azure Cost Management for more accurate cost tracking and management.
+            </div>
+            <!-- Close Button -->
+            <button class="mt-8 px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark" (click)="onCloseClick()">Close</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,191 @@
+<div class="flex flex-col flex-auto min-w-0">
+
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 min-w-0">
+            <!-- Breadcrumbs -->
+            <div class="flex flex-wrap items-center font-medium">
+                <a class="whitespace-nowrap text-primary-500" (click)="navigateToTemplatesComponent()">User Templates</a>
+                <div class="flex items-center ml-1 whitespace-nowrap">
+                    <mat-icon
+                        class="icon-size-5 text-secondary"
+                        [svgIcon]="'heroicons_mini:chevron-right'"></mat-icon>
+                    <a class="ml-1 text-primary-500">Documentation</a>
+                </div>
+            </div>
+            <!-- Title -->
+            <div class="mt-2">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    Overview
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex-auto p-6 sm:p-10">
+
+        <div class="prose prose-sm max-w-3xl">
+
+            <!-- Introduction -->
+            <h2>Introduction</h2>
+            <p>To deploy a web application  on Azure, you can follow the comprehensive architecture outlined below. This architecture is
+                 designed to be resilient, highly scalable, and capable of evolving quickly, leveraging Azure's robust ecosystem of services and tools. </p>
+            <p>
+                Components:
+            </p>
+            <ul>
+                <li>
+                    <p><strong>Azure App Service: </strong></p>
+                    is a fully managed platform for creating and deploying cloud applications. 
+                    It lets you define a set of compute resources for a web app to run, deploy web apps, and configure deployment slots.
+                   
+                </li>
+                <li>
+                    <p><strong>Deployment slots :</strong></p>
+                    lets you stage a deployment and then swap it with the production deployment. That way, 
+                    you avoid deploying directly into production. See the release engineering and deployment section below for specific recommendations.
+                
+                </li>
+                <li>
+                    <p><strong>IP address:</strong></p>
+                    The App Service app has a public IP address and a domain name. 
+                    The domain name is a subdomain of azurewebsites.net, such as contoso.azurewebsites.net.
+                   
+                </li>
+                <li>
+                    <p><strong>Azure DNS :</strong></p>
+                    is a hosting service for DNS domains, providing name resolution using Microsoft Azure infrastructure.
+                     By hosting your domains in Azure, you can manage your DNS records using the same credentials, APIs, tools, and billing as your other
+                      Azure services. To use a custom domain name (such as contoso.com), create DNS records that map the custom domain name to the IP address.
+                     For more information, see Configure a custom domain name in Azure App Service.
+                </li>
+                <li>
+                    <p><strong>Azure SQL Database :</strong></p>
+                    is a relational database-as-a-service in the cloud. SQL Database shares its code base with the Microsoft SQL Server database engine.
+                     Depending on your application requirements, you can also use Azure Database for MySQL or Azure Database for PostgreSQL. 
+                    These alternatives are fully managed database services based on the open-source MySQL Server and Postgres database engines.
+                </li>
+                <li>
+                    <p><strong>Microsoft Entra ID :</strong></p>
+                    is a cloud-based identity and access management service that lets employees access cloud apps developed for your organization.
+                </li>
+                <li>
+                    <p><strong>Azure Monitor :</strong></p>
+                    is a solution for collecting, analyzing, and acting on logs and metrics across your environments.
+                </li>
+                <li>
+                    <p><strong>Azure Key Vault :</strong></p>
+                    supports secrets management, key management, and certificate management.
+                     It can store application secrets like database connection strings.
+                </li>
+            </ul>
+            <p>
+                DevOps :
+            </p>
+            <ul>
+                <li>
+                    <p><strong>
+                    </strong></p>
+                    Use ARM templates to deploy Azure resources and their dependencies. The accompanying ARM template deploys a single web application. 
+                    All the resources are isolated in the same basic workload. This isolation makes it easier to associate the workload's
+                     specific resources to a team. The team can then independently manage all aspects of those resources. 
+                    This isolation enables the DevOps team to perform continuous integration and continuous delivery (CI/CD).  </li>
+                <li>
+                    <p><strong>
+                    </strong></p>
+                    Use different ARM Templates and integrate them with Azure DevOps services. This setup lets you create different environments in minutes.
+                     For example, you can replicate production-like scenarios or load testing environments only when needed and save on cost.    </li>
+                <li>
+                    <p><strong>
+                    </strong></p>
+                    Provision multiple instances of the web application. You don't want your web app to depend on a single instance and potentially create a single point of failure. Multiple instances improve resiliency and scalability.
+                </li>
+                </ul>
+                <!-- <li>
+                    <p><strong>VPC (Virtual Private Cloud):
+                    </strong></p>
+                    The Virtual Private Cloud (VPC) provides a logically isolated section of the AWS cloud where you can launch AWS resources in a virtual network defined by your specifications.
+                     It enables you to customize the network configuration, such as IP address ranges, subnets, route tables, and network gateways.
+                </li>
+                <li>
+                    <p><strong>Public Subnets :
+                    </strong></p>
+                    Public subnets are accessible from the internet and are typically used to deploy resources that require public accessibility,
+                     such as web servers and load balancers.
+                </li>
+                <li>
+                    <p><strong>Private Subnets :
+                    </strong></p>
+                    Private subnets are isolated from the internet and are used to deploy resources that require additional security,
+                     such as databases and application servers.
+                     They can communicate with the internet via NAT Gateways.
+                </li>
+                <li>
+                    <p><strong>NAT Gateway :
+                    </strong></p>
+                    NAT Gateways allow resources in private subnets to initiate outbound connections to the internet while preventing inbound traffic from the internet.
+                     They provide secure and scalable internet access for resources in private subnets.
+                </li>
+                <li>
+                    <p><strong>Elastic Load Balancing (ELB) :
+                    </strong></p>
+                    Elastic Load Balancing automatically distributes incoming application traffic across multiple targets, such as EC2 instances or containers,
+                     to ensure high availability and fault tolerance of applications.
+                </li>
+                <li>
+                    <p><strong>Amazon Elastic Kubernetes Service (EKS) :
+                    </strong></p>
+                    Amazon Elastic Kubernetes Service (EKS) is a fully managed Kubernetes service that simplifies the deployment, management, and scaling of containerized applications using Kubernetes.
+                     It integrates with other AWS services for seamless application deployment and management.
+                </li>
+              
+            </ul>
+            <p>
+                Deployment Steps :
+            </p>
+            <ul>
+                <li>
+                    <p><strong>Set up Route 53 to manage DNS records and configure routing policies. </strong></p>
+                   
+                </li>
+                <li>
+                    <p><strong>Create a CloudFront distribution to accelerate the delivery of web content.</strong></p>
+                
+                </li>
+                <li>
+                    <p><strong>Configure a VPC with public and private subnets across two availability zones.</strong></p>
+                   
+                </li>
+                <li>
+                    <p><strong>Attach an Internet Gateway to the VPC to enable internet access.</strong></p>
+                   
+                </li>
+                <li>
+                    <p><strong>Deploy NAT Gateways in each availability zone for outbound internet access from private subnets..</strong></p>
+                   
+                </li>
+                <li>
+                    <p><strong>Configure route tables to direct traffic to the Internet Gateway for public subnets and to NAT Gateways for private subnets.</strong></p>
+                   
+                </li>
+                <li>
+                    <p><strong>Set up Elastic Load Balancing to distribute traffic to EKS nodes for containerized applications.</strong></p>
+                   
+                </li>
+                <li>
+                    <p><strong>Deploy an Amazon EKS cluster for managing and orchestrating containers.</strong></p>
+                   
+                </li>
+            </ul> -->
+           <h2>Recommendations</h2>
+            <p>
+                Your requirements might differ from the architecture described and given in the code.
+                 The code deploys with production configurations. Use the recommendations to customize your deployment to meet your needs.
+
+            </p>
+        </div>
+
+    </div>
+
+</div>

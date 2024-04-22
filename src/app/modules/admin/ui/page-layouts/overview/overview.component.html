@@ -1,0 +1,92 @@
+<div class="flex flex-col flex-auto min-w-0">
+
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 min-w-0">
+            <!-- Breadcrumbs -->
+            <div class="flex flex-wrap items-center font-medium">
+                <a class="whitespace-nowrap text-primary-500"(click)="navigateToTemplatesComponent()">User Templates</a>
+                <div class="flex items-center ml-1 whitespace-nowrap">
+                    <mat-icon
+                        class="icon-size-5 text-secondary"
+                        [svgIcon]="'heroicons_mini:chevron-right'"></mat-icon>
+                    <a class="ml-1 text-primary-500">Documentation</a>
+                </div>
+            </div>
+            <!-- Title -->
+            <div class="mt-2">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    Overview
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex-auto p-6 sm:p-10">
+
+        <div class="prose prose-sm max-w-3xl">
+
+            <!-- Introduction -->
+            <h2>Introduction</h2>
+            <p>
+                This project is an Infrastructure as Code (IaC) solution developed with Terraform for deploying a microservices application as 
+                containerized applications in Amazon ECS. It leverages the power of Terraform to automate the provisioning and management
+                 of AWS resources, ensuring a scalable, reliable, and efficient deployment of microservices.
+            </p>
+            <p>
+                Target Technology Stack:
+            </p>
+            <ul>
+                <li>
+                    <p><strong>Amazon Elastic Container Registry (ECR): </strong></p>
+                    A fully managed registry that makes it easy to store, manage, and deploy Docker container images. Amazon ECR hosts your images
+                     in a highly available and scalable architecture so you can reliably deploy containers for your applications.
+                </li>
+                <li>
+                    <p><strong>Amazon Elastic Container Service (ECS):</strong></p>
+                    A highly scalable, high-performance container orchestration service that supports Docker 
+                    containers and allows you to easily run and scale containerized apps on AWS.
+                </li>
+                <li>
+                    <p><strong>AWS Fargate</strong></p>
+                    A compute engine that you can use with Amazon ECS to run containers without having to manage servers or clusters of Amazon EC2 instances.
+                     With AWS Fargate,
+                     you no longer have to provision, configure, or scale clusters of virtual machines to run containers.
+                </li>
+                <li>
+                    <p><strong>Virtual private clouds (VPC)</strong></p>
+                    A VPC is a virtual network that closely resembles a traditional network that you'd operate in your own data center.
+                    After you create a VPC, you can add subnets.  
+                </li>
+            </ul>
+            <p>
+                Non-Functional Requirements :
+            </p>
+            <ul>
+                <li>
+                    <p><strong>Scalability :
+                    </strong></p>
+                    Auto-scaling : Configure ECS services to automatically scale based on
+                    demand , ensuring that the system can handle varying loads efficiently.
+                </li>
+                <li>
+                    <p><strong>High availability :
+                    </strong></p>
+                    Deploy ECS services across multiple Availability Zones to ensure high
+                    availability and fault tolerance.
+                </li>
+                <li>
+                    <p><strong>Security :
+                    </strong></p>
+                    Encryption: Ensure that data at rest in ECR and in transit between ECR and
+                    ECS is encrypted using AWS-managed encryption keys or
+                    customer-managed keys for enhanced security.
+                </li>
+              
+            </ul>
+        </div>
+
+    </div>
+
+</div>

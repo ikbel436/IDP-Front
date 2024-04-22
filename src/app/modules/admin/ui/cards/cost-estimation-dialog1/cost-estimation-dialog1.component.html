@@ -1,0 +1,42 @@
+<div class="absolute inset-0 min-w-0 text-center overflow-auto print:overflow-visible" cdkScrollable>
+
+    <!-- Main -->
+    <div class="inline-block p-6 sm:p-10 text-left print:p-0">
+  
+      <!-- Invoice -->
+      <div class="w-240 p-16 rounded-2xl shadow bg-card print:w-auto print:rounded-none print:shadow-none print:bg-transparent">
+  
+        <!-- Invoice Title -->
+        <div class="text-xl font-semibold text-center mb-8">Cost Estimation</div>
+  
+        <!-- Cost Details -->
+        <div class="grid grid-cols-2 gap-x-4 gap-y-2">
+          <!-- ECS with Fargate -->
+          <div class="font-medium">ECS with Fargate:</div>
+          <div>Task Execution: $1,156.68</div>
+          <div>Data Transfer: Varies based on actual usage</div>
+          <!-- ECR -->
+          <div class="font-medium">ECR:</div>
+          <div>Storage: $10.00</div>
+          <div>Data Transfer: Varies based on actual usage</div>
+          <!-- VPC -->
+          <div class="font-medium">VPC:</div>
+          <div>NAT Gateway: $32.40</div>
+          <div>Data Transfer: $1.00 (assuming 100GB in and out)</div>
+        </div>
+  
+        <!-- Total Estimated Monthly Cost -->
+        <div class="mt-8 font-medium">Total Estimated Monthly Cost:</div>
+        <div class="text-2xl">$1,200.08</div>
+  
+        <!-- Additional Note -->
+        <div class="mt-8 text-sm text-gray-500">
+          This is a simplified example and actual costs may vary based on usage patterns, data transfer volumes, and specific AWS region pricing. It's important to regularly monitor usage and adjust resources as needed to optimize costs. Additionally, consider utilizing AWS Cost Explorer and AWS Budgets for more accurate cost tracking and management.
+        </div>
+  
+      </div>
+  
+    </div>
+  
+  </div>
+  
