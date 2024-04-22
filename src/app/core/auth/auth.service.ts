@@ -203,6 +203,7 @@ export class AuthService
             return of(true);
         }
 
+        console.log(this._authenticated)
         // Check the access token availability
         if ( !this.accessToken )
         {
@@ -210,12 +211,12 @@ export class AuthService
         }
 
         // Check the access token expire date
-        if ( AuthUtils.isTokenExpired(this.accessToken) )
-        {
-            return of(false);
-        }
-this._authenticated=true;
-this.accessToken=localStorage.getItem('accessToken')
+        // if ( AuthUtils.isTokenExpired(this.accessToken) )
+        // {
+        //     return of(false);
+        // }
+        this._authenticated=true;
+        this.accessToken=localStorage.getItem('accessToken')
         // If the access token exists, and it didn't expire, sign in using it
         return of(true);
     }
