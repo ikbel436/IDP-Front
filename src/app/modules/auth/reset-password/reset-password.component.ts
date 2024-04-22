@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
 import { FuseValidators } from '@fuse/validators';
@@ -38,21 +38,20 @@ export class AuthResetPasswordComponent implements OnInit
     constructor(
         private _authService: AuthService,
         private _formBuilder: UntypedFormBuilder,
-        private route: ActivatedRoute
     )
-    { 
+    {
     }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
     // -----------------------------------------------------------------------------------------------------
-    token: string;
+
     /**
      * On init
      */
     ngOnInit(): void
     {
-       // Create the form
+        // Create the form
         this.resetPasswordForm = this._formBuilder.group({
                 password       : ['', Validators.required],
                 passwordConfirm: ['', Validators.required],
@@ -60,20 +59,9 @@ export class AuthResetPasswordComponent implements OnInit
             {
                 validators: FuseValidators.mustMatch('password', 'passwordConfirm'),
             },
-          
         );
-        
-        this.route.paramMap.subscribe(params => {
-            this.token = params.get('token');
-            console.log('Token:', this.token);
-          });
-       
-        
- 
     }
-   
 
-    password: string;
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
@@ -81,9 +69,14 @@ export class AuthResetPasswordComponent implements OnInit
     /**
      * Reset password
      */
-    
     resetPassword(): void
-    {
+    {   const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+        if (!token) {
+            console.error('token not found');
+            return;
+        }
+        localStorage.setItem('resetPasswordToken', token);
         // Return if the form is invalid
         if ( this.resetPasswordForm.invalid )
         {
@@ -95,9 +88,9 @@ export class AuthResetPasswordComponent implements OnInit
 
         // Hide the alert
         this.showAlert = false;
-        const password = this.resetPasswordForm.value.password;
+
         // Send the request to the server
-        this._authService.resetPassword(this.token, password)
+        this._authService.resetPassword( this.resetPasswordForm.get('password').value)
             .pipe(
                 finalize(() =>
                 {
@@ -105,7 +98,7 @@ export class AuthResetPasswordComponent implements OnInit
                     this.resetPasswordForm.enable();
 
                     // Reset the form
-                    this.resetPasswordNgForm.reset();
+                    this.resetPasswordNgForm.resetForm();
 
                     // Show the alert
                     this.showAlert = true;

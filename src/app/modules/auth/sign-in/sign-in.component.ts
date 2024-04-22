@@ -1,3 +1,4 @@
+
 import { NgIf } from '@angular/common';
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormsModule, NgForm, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
@@ -11,10 +12,6 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
 import { AuthService } from 'app/core/auth/auth.service';
-import { AuthUtils } from 'app/core/auth/auth.utils';
-import { TokenStorageService } from 'app/core/auth/token-storage.service';
-import { UserService } from 'app/core/user/user.service';
-import { response } from 'express';
 
 @Component({
     selector     : 'auth-sign-in',
@@ -43,8 +40,6 @@ export class AuthSignInComponent implements OnInit
         private _authService: AuthService,
         private _formBuilder: UntypedFormBuilder,
         private _router: Router,
-        private tokenStorage: TokenStorageService,
-       
     )
     {
     }
@@ -57,64 +52,19 @@ export class AuthSignInComponent implements OnInit
      * On init
      */
     ngOnInit(): void
-    {  
+    {
         // Create the form
         this.signInForm = this._formBuilder.group({
-            email     : ['', [Validators.required, Validators.email]],
-            password  : ['', Validators.required]
-          
+            email     : ['inspark@gmail.com', [Validators.required, Validators.email]],
+            password  : ['anis', Validators.required],
+            rememberMe: [''],
         });
     }
-    email: string;
-    password: string;
+
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
-    login() {
-        this._authService.login(this.email, this.password).subscribe(
-          response => {
-            console.log('Login successful', response);
-            // Rediriger l'utilisateur vers la page d'accueil ou une autre page
-          },
-          error => {
-            console.error('Login failed', error);
-            // Gérer les erreurs de connexion
-          }
-        );
-     }
-     signIn1() {
-        if (this.signInForm.invalid) {
-            return;
-        }
-    
-        const { email, password } = this.signInForm.value;
-    
-        this._authService.signInUsingToken1(email, password).subscribe(
-            success => {
-                if (success) {
-                    this.tokenStorage.saveToken(this._authService.accessToken);
-                    this.tokenStorage.saveUser(success);
-            
-                    console.log('Sign in successful');
-                    console.log(this._authService.accessToken)
-                    
-                    // Rediriger l'utilisateur vers la page d'accueil ou une autre page
-                    const redirectURL = this._activatedRoute.snapshot.queryParamMap.get('redirectURL') || '/signed-in-redirect';
 
-                    // Navigate to the redirect url
-                    this._router.navigateByUrl("redirectURL");
-                   
-                } else {
-                    console.error('Sign in failed');
-                    // Gérer les échecs de connexion
-                }
-            },
-            error => {
-                console.error('Error during sign in', error);
-                // Gérer les erreurs de connexion
-            }
-        );
-    }
     /**
      * Sign in
      */
@@ -125,7 +75,7 @@ export class AuthSignInComponent implements OnInit
         {
             return;
         }
-
+        const credentials = this.signInForm.value;
         // Disable the form
         this.signInForm.disable();
 
@@ -133,7 +83,7 @@ export class AuthSignInComponent implements OnInit
         this.showAlert = false;
 
         // Sign in
-        this._authService.signIn(this.signInForm.value)
+        this._authService.signIn(credentials)
             .subscribe(
                 () =>
                 {

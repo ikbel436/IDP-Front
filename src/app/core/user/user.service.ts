@@ -1,13 +1,20 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { User } from 'app/core/user/user.types';
 import { map, Observable, ReplaySubject, tap } from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class UserService
-{
-    private _httpClient = inject(HttpClient);
+{   private apiUrl = 'http://localhost:3000';
     private _user: ReplaySubject<User> = new ReplaySubject<User>(1);
+
+    /**
+     * Constructor
+     */
+    constructor(private _httpClient: HttpClient)
+    {
+    }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Accessors
@@ -25,20 +32,37 @@ export class UserService
     }
 
     get user$(): Observable<User>
-    {
+    {        
         return this._user.asObservable();
     }
+    
+    token = localStorage.getItem('accessToken');
 
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
 
     /**
-     * Get the current signed-in user data
+     * Get the current logged in user data
      */
     get(): Observable<User>
-    {
-        return this._httpClient.get<User>('api/common/user').pipe(
+    {   const url = `${this.apiUrl}/user`;
+    const headers = new HttpHeaders({
+        'Authorization': `Bearer ${this.token}` // Remplacez `votreToken` par votre véritable token
+    });
+        return this._httpClient.get<User>(url, {headers: headers}).pipe(
+            tap((user) =>
+            {
+                this._user.next(user);
+            }),
+        );
+    }
+    post(): Observable<User>
+    {   const url = `${this.apiUrl}/user`;
+    const headers = new HttpHeaders({
+        'Authorization': `Bearer ${this.token}` // Remplacez `votreToken` par votre véritable token
+    });
+        return this._httpClient.get<User>(url, {headers: headers}).pipe(
             tap((user) =>
             {
                 this._user.next(user);
@@ -46,6 +70,8 @@ export class UserService
         );
     }
 
+
+  
     /**
      * Update the user
      *

@@ -1,16 +1,26 @@
-import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { AuthUtils } from 'app/core/auth/auth.utils';
 import { UserService } from 'app/core/user/user.service';
 import { catchError, Observable, of, switchMap, throwError } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 import { tap } from 'rxjs/operators';
+
 @Injectable({providedIn: 'root'})
 export class AuthService
-{private apiUrl = 'http://localhost:8080'; 
+{
     private _authenticated: boolean = false;
-    private _httpClient = inject(HttpClient);
-    private _userService = inject(UserService);
-  
+    private apiUrl = 'http://localhost:3000/auth';
+    /**
+     * Constructor
+     */
+    constructor(
+        private _httpClient: HttpClient,
+        private _userService: UserService,
+    )
+    {
+    }
+
     // -----------------------------------------------------------------------------------------------------
     // @ Accessors
     // -----------------------------------------------------------------------------------------------------
@@ -37,25 +47,44 @@ export class AuthService
      *
      * @param email
      */
-    // forgotPassword(email: string): Observable<any>
-    // {
-    //     return this._httpClient.post('api/auth/forgot-password', email);
-    // }
-    forgotPassword(email: string) {
-        return this._httpClient.post(`${this.apiUrl}/api/users/forgot-password`, { email });
-     }
+    forgotPassword(email: string): Observable<any>
+    {const url = `${this.apiUrl}/forgot-password`;
+        return this._httpClient.post(url, email);
+        
+    }
+
     /**
      * Reset password
      *
      * @param password
      */
-    // resetPassword(password: string): Observable<any>
-    // {
-    //     return this._httpClient.post('api/auth/reset-password', password);
-    // }
-    resetPassword(token: string, password: string) {
-        return this._httpClient.post(`${this.apiUrl}/api/password-reset/reset/${token}`, { password });
-     }
+    set resetPasswordToken(token: string) {
+        localStorage.setItem('resetPasswordToken', token);
+    }
+    get resetPasswordToken(): string
+    {
+        return localStorage.getItem('resetPasswordToken') ?? '' ;
+    }
+    resetPassword(password: string): Observable<any>
+    {
+        const token = this.resetPasswordToken;
+
+        const url = `${this.apiUrl}/reset-password`;
+        const requestBody = {
+        password: password,
+        resetPasswordToken: token
+        };
+        console.log(requestBody);
+        
+        return this._httpClient.post(url, requestBody).pipe(
+            tap(() => {
+                // Supprimer le resetPasswordToken du localStorage après l'utilisation
+                localStorage.removeItem('resetPasswordToken');
+            })
+        );
+    
+    }
+
     /**
      * Sign in
      *
@@ -68,73 +97,34 @@ export class AuthService
         {
             return throwError('User is already logged in.');
         }
-
-        return this._httpClient.post('http://localhost:8080/api/auth', credentials).pipe(
+        const url = `${this.apiUrl}/login`;
+        return this._httpClient.post<any>(url, credentials).pipe(
+            
             switchMap((response: any) =>
             {
-
-                console.log(response)
                 // Store the access token in the local storage
-                this.accessToken = response.token;
-              // localStorage.setItem('token', response.token);
+                this.accessToken = response.accessToken;
+
                 // Set the authenticated flag to true
                 this._authenticated = true;
 
                 // Store the user on the user service
                 this._userService.user = response.user;
-               
+
                 // Return a new observable with the response
                 return of(response);
             }),
         );
     }
-    // ****************
-    
-    login(email: string, password: string) {
-        return this._httpClient.post<{ token: string }>(`${this.apiUrl}/api/auth`, { email, password })
-          .pipe(
-            tap(response => {
-              localStorage.setItem('token', response.token);
-            })
-          );
-     }
-     //*******************
-     signInUsingToken1(email: string, password: string): Observable<any> {
-        // Envoyer l'email et le mot de passe pour obtenir un nouveau token d'accès
-        return this._httpClient.post<any>('http://localhost:8080/api/auth', {
-            email,
-            password
-        }).pipe(
-            catchError(() => of(false)),
-            switchMap((response: any) => {
-                console.log(response)
-                // Vérifier si un nouveau token d'accès est disponible dans la réponse
-                if (response.token) {
-                    this.accessToken = response.token;
-                    console.log(this.accessToken)
-                    console.log(response.user);
-                }
-    
-                // Mettre à jour l'état d'authentification
-                this._authenticated = true;
-    
-                // Stocker l'utilisateur dans le service utilisateur
-                this._userService.user = response.user;
-               
 
-                // Retourner true pour indiquer la réussite de la connexion
-                return of(true);
-            }),
-        );
-    }
     /**
      * Sign in using the access token
      */
     signInUsingToken(): Observable<any>
     {
         // Sign in using the token
-        return this._httpClient.post('http://localhost:8080/api/auth', {
-            token: this.accessToken
+        return this._httpClient.post('api/auth/sign-in-with-token', {
+            accessToken: this.accessToken,
         }).pipe(
             catchError(() =>
 
@@ -187,9 +177,9 @@ export class AuthService
      *
      * @param user
      */
-    signUp(user: { firstName: string; email: string; password: string; lastName: string }): Observable<any>
-    {
-        return this._httpClient.post('http://localhost:8080/api/users', user);
+    signUp(user: { name: string; email: string; password: string; confirm_password: string; phoneNumber: string;}): Observable<any>
+    {   const url = `${this.apiUrl}/register`;
+        return this._httpClient.post(url, user);
     }
 
     /**
@@ -224,8 +214,9 @@ export class AuthService
         {
             return of(false);
         }
-
+this._authenticated=true;
+this.accessToken=localStorage.getItem('accessToken')
         // If the access token exists, and it didn't expire, sign in using it
-        return this.signInUsingToken();
+        return of(true);
     }
 }

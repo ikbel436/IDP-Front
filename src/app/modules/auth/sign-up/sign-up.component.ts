@@ -53,10 +53,12 @@ export class AuthSignUpComponent implements OnInit
     {
         // Create the form
         this.signUpForm = this._formBuilder.group({
-            firstName      : ['', Validators.required],
+                name      : ['', Validators.required],
                 email     : ['', [Validators.required, Validators.email]],
                 password  : ['', Validators.required],
-                lastName   : ['']
+                confirm_password  : ['', Validators.required],
+                company   : [''],
+                agreements: ['', Validators.requiredTrue],
             },
         );
     }
@@ -83,13 +85,12 @@ export class AuthSignUpComponent implements OnInit
         this.showAlert = false;
 
         // Sign up
-        console.log(this.signUpForm.value)
         this._authService.signUp(this.signUpForm.value)
             .subscribe(
                 (response) =>
                 {
                     // Navigate to the confirmation required page
-                    this._router.navigateByUrl('/confirmation-required');
+                    this._router.navigateByUrl('/sign-in');
                 },
                 (response) =>
                 {
