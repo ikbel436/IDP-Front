@@ -14,19 +14,19 @@ export class AuthUtils
     /**
      * Is token expired?
      *
-     * @param token
+     * @param accessToken
      * @param offsetSeconds
      */
-    static isTokenExpired(token: string, offsetSeconds?: number): boolean
+    static isTokenExpired(accessToken: string, offsetSeconds?: number): boolean
     {
         // Return if there is no token
-        if ( !token || token === '' )
+        if ( !accessToken || accessToken === '' )
         {
             return true;
         }
 
         // Get the expiration date
-        const date = this._getTokenExpirationDate(token);
+        const date = this._getTokenExpirationDate(accessToken);
 
         offsetSeconds = offsetSeconds || 0;
 
@@ -141,19 +141,19 @@ export class AuthUtils
     /**
      * Decode token
      *
-     * @param token
+     * @param accessToken
      * @private
      */
-    private static _decodeToken(token: string): any
+    private static _decodeToken(accessToken: string): any
     {
         // Return if there is no token
-        if ( !token )
+        if ( !accessToken )
         {
             return null;
         }
 
         // Split the token
-        const parts = token.split('.');
+        const parts = accessToken.split('.');
 
         if ( parts.length !== 3 )
         {
@@ -174,13 +174,13 @@ export class AuthUtils
     /**
      * Get token expiration date
      *
-     * @param token
+     * @param accessToken
      * @private
      */
-    private static _getTokenExpirationDate(token: string): Date | null
+    private static _getTokenExpirationDate(accessToken: string): Date | null
     {
         // Get the decoded token
-        const decodedToken = this._decodeToken(token);
+        const decodedToken = this._decodeToken(accessToken);
 
         // Return if the decodedToken doesn't have an 'exp' field
         if ( !decodedToken.hasOwnProperty('exp') )

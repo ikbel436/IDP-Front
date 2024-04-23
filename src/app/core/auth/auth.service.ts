@@ -28,14 +28,19 @@ export class AuthService
     /**
      * Setter & getter for access token
      */
-    set accessToken(token: string)
-    {
-        localStorage.setItem('accessToken', token);
+ // Setter & getter for access token
+    set accessToken(jwt: string) {
+        // Set the JWT token in a cookie
+        document.cookie = `jwt=${jwt}; path=/; secure; samesite=strict`;
+        console.log(jwt);
     }
 
-    get accessToken(): string
-    {
-        return localStorage.getItem('accessToken') ?? '';
+    get accessToken(): string {
+        // Parse document.cookie to get the JWT token
+        const cookies = document.cookie.split('; ');
+        const accessTokenCookie = cookies.find(cookie => cookie.startsWith('jwt='));
+        return accessTokenCookie ? accessTokenCookie.split('=')[1] : '';
+        
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -58,8 +63,8 @@ export class AuthService
      *
      * @param password
      */
-    set resetPasswordToken(token: string) {
-        localStorage.setItem('resetPasswordToken', token);
+    set resetPasswordToken(accessToken: string) {
+        localStorage.setItem('resetPasswordToken', accessToken);
     }
     get resetPasswordToken(): string
     {
@@ -98,12 +103,13 @@ export class AuthService
             return throwError('User is already logged in.');
         }
         const url = `${this.apiUrl}/login`;
-        return this._httpClient.post<any>(url, credentials).pipe(
+        return this._httpClient.post<any>(url, credentials , { withCredentials: true }).pipe(
             
             switchMap((response: any) =>
             {
+                console.log(response.jwt);
                 // Store the access token in the local storage
-                this.accessToken = response.accessToken;
+                this.accessToken = response.jwt;
 
                 // Set the authenticated flag to true
                 this._authenticated = true;
@@ -160,10 +166,9 @@ export class AuthService
     /**
      * Sign out
      */
-    signOut(): Observable<any>
-    {
-        // Remove the access token from the local storage
-        localStorage.removeItem('accessToken');
+    signOut(): Observable<any> {
+        // Remove the access token from the cookie
+        document.cookie = 'accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
 
         // Set the authenticated flag to false
         this._authenticated = false;
