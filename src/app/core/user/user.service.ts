@@ -6,7 +6,7 @@ import { map, Observable, ReplaySubject, tap } from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class UserService
-{   private apiUrl = 'http://localhost:3000';
+{   private apiUrl = 'http://localhost:3000/auth';
     private _user: ReplaySubject<User> = new ReplaySubject<User>(1);
 
     /**
@@ -46,7 +46,7 @@ export class UserService
      * Get the current logged in user data
      */
     get(): Observable<User>
-    {   const url = `${this.apiUrl}/user`;
+    {   const url = `${this.apiUrl}/current`;
     const headers = new HttpHeaders({
         'Authorization': `Bearer ${this.token}` // Remplacez `votreToken` par votre véritable token
     });

@@ -10,6 +10,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { FuseCardComponent } from '@fuse/components/card';
+import { UserService } from 'app/core/user/user.service';
 
 @Component({
     selector       : 'profile',
@@ -24,7 +25,21 @@ export class ProfileComponent
     /**
      * Constructor
      */
-    constructor()
+    constructor(  private userService: UserService)
     {
+    }
+    currentUser: any;
+    /**
+     * On init
+     */
+    ngOnInit(): void
+    { this.userService.get().subscribe(
+        user => {
+          this.currentUser = user;
+        },
+        error => {
+          console.error('Error fetching current user:', error);
+        }
+      );
     }
 }

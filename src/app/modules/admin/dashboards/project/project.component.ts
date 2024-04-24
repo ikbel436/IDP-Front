@@ -3,15 +3,18 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewEncapsulatio
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatRippleModule } from '@angular/material/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Router } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
+import { UserService } from 'app/core/user/user.service';
 import { ProjectService } from 'app/modules/admin/dashboards/project/project.service';
 import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
 import { Subject, takeUntil } from 'rxjs';
+import { ProfileUpdateDialogComponent } from './profile-update-dialog/profile-update-dialog.component';
 
 @Component({
     selector       : 'project',
@@ -39,6 +42,8 @@ export class ProjectComponent implements OnInit, OnDestroy
     constructor(
         private _projectService: ProjectService,
         private _router: Router,
+        private userService: UserService,
+        public dialog: MatDialog
     )
     {
     }
@@ -46,12 +51,19 @@ export class ProjectComponent implements OnInit, OnDestroy
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
     // -----------------------------------------------------------------------------------------------------
-
+    currentUser: any;
     /**
      * On init
      */
     ngOnInit(): void
-    {
+    { this.userService.get().subscribe(
+        user => {
+          this.currentUser = user;
+        },
+        error => {
+          console.error('Error fetching current user:', error);
+        }
+      );
         // Get the data
         this._projectService.data$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -80,7 +92,17 @@ export class ProjectComponent implements OnInit, OnDestroy
             },
         };
     }
-
+    openDialog(): void {
+        const dialogRef = this.dialog.open(ProfileUpdateDialogComponent, {
+          width: '400px',
+          // Add any other configuration options for the dialog
+        });
+    
+        dialogRef.afterClosed().subscribe(result => {
+          console.log('The dialog was closed');
+          // Add any actions to take after the dialog is closed
+        });
+      }
     /**
      * On destroy
      */

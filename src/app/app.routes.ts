@@ -3,6 +3,8 @@ import { initialDataResolver } from 'app/app.resolvers';
 import { AuthGuard } from 'app/core/auth/guards/auth.guard';
 import { NoAuthGuard } from 'app/core/auth/guards/noAuth.guard';
 import { LayoutComponent } from 'app/layout/layout.component';
+import { AdminGuard } from './core/auth/guards/admin.guard';
+import { ClientGuard } from './core/auth/guards/client.guard';
 
 
 
@@ -70,7 +72,7 @@ export const appRoutes: Route[] = [
     {
         path: '',
         canActivate: [AuthGuard],
-        canActivateChild: [AuthGuard],
+       // canActivateChild: [AuthGuard],
         component: LayoutComponent,
         resolve: {
             initialData: initialDataResolver
@@ -78,7 +80,9 @@ export const appRoutes: Route[] = [
         children: [
 
             // Dashboards
-            {path: 'dashboards', children: [
+            {path: 'dashboards',
+            canActivate: [AdminGuard],
+             children: [
                 {path: 'project', loadChildren: () => import('app/modules/admin/dashboards/project/project.routes')},
                 {path: 'analytics', loadChildren: () => import('app/modules/admin/dashboards/analytics/analytics.routes')},
                 {path: 'finance', loadChildren: () => import('app/modules/admin/dashboards/finance/finance.routes')},
@@ -86,7 +90,10 @@ export const appRoutes: Route[] = [
             ]},
 
             // Apps
-            {path: 'apps', children: [
+            {path: 'apps',
+            canActivate: [ClientGuard],
+            //canActivateChild: [ClientGuard],
+             children: [
                 {path: 'academy', loadChildren: () => import('app/modules/admin/apps/academy/academy.routes')},
                 {path: 'chat', loadChildren: () => import('app/modules/admin/apps/chat/chat.routes')},
                 {path: 'contacts', loadChildren: () => import('app/modules/admin/apps/contacts/contacts.routes')},
