@@ -166,16 +166,19 @@ export class AuthService
     /**
      * Sign out
      */
-    signOut(): Observable<any> {
-        // Remove the access token from the cookie
-        document.cookie = 'accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+   signOut(): Observable<any> {
+    // Make a request to the server to delete the cookie
+    return this._httpClient.post(`${this.apiUrl}/logout`, {}, { withCredentials: true }).pipe(
+        tap(() => {
 
-        // Set the authenticated flag to false
-        this._authenticated = false;
-
-        // Return the observable
-        return of(true);
-    }
+        }),
+        catchError((error) => {
+            // Handle any errors from the server
+            return throwError(error);
+        })
+    );
+}
+    
 
     /**
      * Sign up
