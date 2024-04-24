@@ -24,13 +24,16 @@ export class AuthService
     // -----------------------------------------------------------------------------------------------------
     // @ Accessors
     // -----------------------------------------------------------------------------------------------------
-
+    getUserRole(): string {
+        return localStorage.getItem('userRole');
+      }
     /**
      * Setter & getter for access token
      */
     set accessToken(token: string)
     {
         localStorage.setItem('accessToken', token);
+       
     }
 
     get accessToken(): string
@@ -48,8 +51,8 @@ export class AuthService
      * @param email
      */
     forgotPassword(email: string): Observable<any>
-    {const url = `${this.apiUrl}/forgot-password`;
-        return this._httpClient.post(url, email);
+    {const url = `${this.apiUrl}/forgot`;
+        return this._httpClient.post(url, {email});
         
     }
 
@@ -59,31 +62,33 @@ export class AuthService
      * @param password
      */
     set resetPasswordToken(token: string) {
-        localStorage.setItem('resetPasswordToken', token);
+        localStorage.setItem('resetLink', token);
+        console.log(token);
     }
     get resetPasswordToken(): string
     {
-        return localStorage.getItem('resetPasswordToken') ?? '' ;
+        return localStorage.getItem('resetLink') ?? '' ;
     }
     resetPassword(password: string): Observable<any>
     {
         const token = this.resetPasswordToken;
 
-        const url = `${this.apiUrl}/reset-password`;
+        const url = `${this.apiUrl}/reset`;
         const requestBody = {
-        password: password,
-        resetPasswordToken: token
+        newPass: password,
+        resetLink: token
         };
-        console.log(requestBody);
+        console.log(requestBody.newPass);
         
         return this._httpClient.post(url, requestBody).pipe(
             tap(() => {
                 // Supprimer le resetPasswordToken du localStorage après l'utilisation
-                localStorage.removeItem('resetPasswordToken');
+                localStorage.removeItem('resetLink');
             })
         );
     
     }
+
 
     /**
      * Sign in
@@ -103,8 +108,8 @@ export class AuthService
             switchMap((response: any) =>
             {
                 // Store the access token in the local storage
-                this.accessToken = response.accessToken;
-
+                this.accessToken = response.token;
+                localStorage.setItem('userRole', response.user.Role);
                 // Set the authenticated flag to true
                 this._authenticated = true;
 

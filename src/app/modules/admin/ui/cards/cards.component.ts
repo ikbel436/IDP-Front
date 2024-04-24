@@ -167,12 +167,12 @@ export class CardsComponent implements AfterViewInit
       }
       downloadZIP1() {
         // URL vers le fichier PDF à télécharger
-        const pdfUrl = '/assets/ZIP/ECS_final.zip';
+        const pdfUrl = '/assets/ZIP/EKS.zip';
         
         // Création d'un élément <a> dynamique
         const link = document.createElement('a');
         link.href = pdfUrl;
-        link.download = 'ECS_final.zip'; // Nom du fichier téléchargé
+        link.download = 'EKS.zip'; // Nom du fichier téléchargé
         link.target = '_blank'; // Pour ouvrir dans un nouvel onglet
         document.body.appendChild(link);
     

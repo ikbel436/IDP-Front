@@ -29,36 +29,3 @@ export const AuthGuard: CanActivateFn | CanActivateChildFn = (route, state) =>
         }),
     );
 };
-// @Injectable({
-//     providedIn: 'root'
-//   })
-//   export class AuthGuard implements CanActivate, CanActivateChild {
-//     constructor(private authService: AuthService, private router: Router) {}
-  
-//     canActivate(
-//       next: ActivatedRouteSnapshot,
-//       state: RouterStateSnapshot
-//     ): Observable<boolean | UrlTree> {
-//       return this.checkAuthentication(state.url);
-//     }
-  
-//     canActivateChild(
-//       childRoute: ActivatedRouteSnapshot,
-//       state: RouterStateSnapshot
-//     ): Observable<boolean | UrlTree> {
-//       return this.checkAuthentication(state.url);
-//     }
-  
-//     private checkAuthentication(url: string): Observable<boolean | UrlTree> {
-//       return this.authService.check().pipe(
-//         switchMap(authenticated => {
-//           if (!authenticated) {
-//             // Redirect to the sign-in page with a redirectUrl param
-//             const redirectURL = url === '/sign-out' ? '' : `redirectURL=${url}`;
-//             return of(this.router.createUrlTree(['sign-in'], { queryParams: { redirectURL } }));
-//           }
-//           return of(true);
-//         })
-//       );
-//     }
-//   }
