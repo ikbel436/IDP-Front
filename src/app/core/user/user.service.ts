@@ -6,7 +6,7 @@ import { map, Observable, ReplaySubject, tap } from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class UserService
-{   private apiUrl = 'http://localhost:3000';
+{   private apiUrl = 'http://localhost:3000/auth';
     private _user: ReplaySubject<User> = new ReplaySubject<User>(1);
 
     /**
@@ -35,9 +35,23 @@ export class UserService
     {        
         return this._user.asObservable();
     }
-    
-    token = localStorage.getItem('accessToken');
+    set accessToken(jwt: string) {
+        // Set the JWT token in a cookie
+        document.cookie = `jwt=${jwt}; path=/; secure; samesite=strict`;
+        console.log(jwt);
+    }
 
+    get accessToken(): string {
+        // Parse document.cookie to get the JWT token
+        const cookies = document.cookie.split('; ');
+        const accessTokenCookie = cookies.find(cookie => cookie.startsWith('jwt='));
+        console.log('AccessTokenCookie:', document.cookie);
+        return accessTokenCookie ? accessTokenCookie.split('=')[1] : '';
+        
+    }
+   
+    //token = localStorage.getItem('accessToken');
+  // token = `jwt=${jwt}; path=/; secure; samesite=strict`;
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
@@ -45,10 +59,12 @@ export class UserService
     /**
      * Get the current logged in user data
      */
+
     get(): Observable<User>
-    {   const url = `${this.apiUrl}/user`;
+    { 
+         const url = `${this.apiUrl}/current`;
     const headers = new HttpHeaders({
-        'Authorization': `Bearer ${this.token}` // Remplacez `votreToken` par votre véritable token
+        'Authorization': `Bearer ${this.accessToken}` // Remplacez `votreToken` par votre véritable token
     });
         return this._httpClient.get<User>(url, {headers: headers}).pipe(
             tap((user) =>
@@ -60,7 +76,7 @@ export class UserService
     post(): Observable<User>
     {   const url = `${this.apiUrl}/user`;
     const headers = new HttpHeaders({
-        'Authorization': `Bearer ${this.token}` // Remplacez `votreToken` par votre véritable token
+        'Authorization': `Bearer ${this.accessToken}` // Remplacez `votreToken` par votre véritable token
     });
         return this._httpClient.get<User>(url, {headers: headers}).pipe(
             tap((user) =>

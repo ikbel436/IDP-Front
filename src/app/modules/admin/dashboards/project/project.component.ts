@@ -9,6 +9,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Router } from '@angular/router';
 import { TranslocoModule } from '@ngneat/transloco';
+import { UserService } from 'app/core/user/user.service';
 import { ProjectService } from 'app/modules/admin/dashboards/project/project.service';
 import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
 import { Subject, takeUntil } from 'rxjs';
@@ -39,6 +40,7 @@ export class ProjectComponent implements OnInit, OnDestroy
     constructor(
         private _projectService: ProjectService,
         private _router: Router,
+        private userService: UserService,
     )
     {
     }
@@ -46,12 +48,21 @@ export class ProjectComponent implements OnInit, OnDestroy
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
     // -----------------------------------------------------------------------------------------------------
-
+    currentUser: any;
     /**
      * On init
      */
     ngOnInit(): void
     {
+    //     this.userService.get().subscribe(
+    //     user => {
+    //       this.currentUser = user;
+    //     },
+    //     error => {
+    //       console.error('Error fetching current user:', error);
+    //     }
+    //   );
+     
         // Get the data
         this._projectService.data$
             .pipe(takeUntil(this._unsubscribeAll))
