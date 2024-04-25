@@ -53,8 +53,8 @@ export class AuthService
      * @param email
      */
     forgotPassword(email: string): Observable<any>
-    {const url = `${this.apiUrl}/forgot-password`;
-        return this._httpClient.post(url, email);
+    {const url = `${this.apiUrl}/forgot`;
+        return this._httpClient.post(url, {email});
         
     }
 
@@ -63,32 +63,34 @@ export class AuthService
      *
      * @param password
      */
-    set resetPasswordToken(accessToken: string) {
-        localStorage.setItem('resetPasswordToken', accessToken);
+    set resetPasswordToken(token: string) {
+        localStorage.setItem('resetLink', token);
+        console.log(token);
     }
     get resetPasswordToken(): string
     {
-        return localStorage.getItem('resetPasswordToken') ?? '' ;
+        return localStorage.getItem('resetLink') ?? '' ;
     }
     resetPassword(password: string): Observable<any>
     {
         const token = this.resetPasswordToken;
 
-        const url = `${this.apiUrl}/reset-password`;
+        const url = `${this.apiUrl}/reset`;
         const requestBody = {
-        password: password,
-        resetPasswordToken: token
+        newPass: password,
+        resetLink: token
         };
-        console.log(requestBody);
+        console.log(requestBody.newPass);
         
         return this._httpClient.post(url, requestBody).pipe(
             tap(() => {
                 // Supprimer le resetPasswordToken du localStorage après l'utilisation
-                localStorage.removeItem('resetPasswordToken');
+                localStorage.removeItem('resetLink');
             })
         );
     
     }
+
 
     /**
      * Sign in
@@ -166,17 +168,27 @@ export class AuthService
     /**
      * Sign out
      */
-   signOut(): Observable<any> {
+   signOut() //: Observable<any> 
+   { 
     // Make a request to the server to delete the cookie
-    return this._httpClient.post(`${this.apiUrl}/logout`, {}, { withCredentials: true }).pipe(
-        tap(() => {
+    // return this._httpClient.post(`${this.apiUrl}/logout`, {}, { withCredentials: true }).pipe(
+    //     tap(() => {
 
-        }),
-        catchError((error) => {
-            // Handle any errors from the server
-            return throwError(error);
-        })
-    );
+    //     }),
+    //     catchError((error) => {
+    //         // Handle any errors from the server
+    //         return throwError(error);
+    //     })
+    // );
+    document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=localhost; max-age=0;";
+    // Additional steps to ensure the cookie is cleared
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].split('=')[0].trim();
+        if (cookie === 'jwt') {
+            document.cookie = `${cookie}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=localhost; max-age=0;`;
+        }
+    }
 }
     
 
@@ -210,7 +222,7 @@ export class AuthService
         {
             return of(true);
         }
-
+        const accessToken = this.accessToken;
         console.log(this._authenticated)
         // Check the access token availability
         if ( !this.accessToken )
@@ -223,9 +235,10 @@ export class AuthService
         // {
         //     return of(false);
         // }
-        this._authenticated=true;
-        this.accessToken=localStorage.getItem('accessToken')
+      //  this._authenticated=true;
+         //document.cookie = `jwt=${jwt}; path=/; secure; samesite=strict`;
+       // this.accessToken=localStorage.getItem('accessToken')
         // If the access token exists, and it didn't expire, sign in using it
-        return of(true);
+       return of(true);
     }
 }

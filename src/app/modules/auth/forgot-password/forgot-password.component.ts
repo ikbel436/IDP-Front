@@ -93,7 +93,7 @@ export class AuthForgotPasswordComponent implements OnInit
             )
             .subscribe(
                 (response) =>
-                {
+                { console.log(response);
                     // Set the alert
                     this.alert = {
                         type   : 'success',

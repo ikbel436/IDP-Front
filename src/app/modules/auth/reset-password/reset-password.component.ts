@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
 import { FuseValidators } from '@fuse/validators';
@@ -31,13 +31,14 @@ export class AuthResetPasswordComponent implements OnInit
     };
     resetPasswordForm: UntypedFormGroup;
     showAlert: boolean = false;
-
+    token: string;
     /**
      * Constructor
      */
     constructor(
         private _authService: AuthService,
         private _formBuilder: UntypedFormBuilder,
+        private route: ActivatedRoute
     )
     {
     }
@@ -53,11 +54,11 @@ export class AuthResetPasswordComponent implements OnInit
     {
         // Create the form
         this.resetPasswordForm = this._formBuilder.group({
-                password       : ['', Validators.required],
-                passwordConfirm: ['', Validators.required],
+            newPass       : ['', Validators.required],
+              
             },
             {
-                validators: FuseValidators.mustMatch('password', 'passwordConfirm'),
+                validators: FuseValidators.mustMatch('newPass', 'passwordConfirm'),
             },
         );
     }
@@ -70,30 +71,34 @@ export class AuthResetPasswordComponent implements OnInit
      * Reset password
      */
     resetPassword(): void
-    {   const urlParams = new URLSearchParams(window.location.search);
+    {  
+         const urlParams = new URLSearchParams(window.location.search);
+    
         const token = urlParams.get('token');
-        if (!token) {
+         this.token = this.route.snapshot.params.token;
+         console.log(this.token)
+        if (this.token==undefined) {
             console.error('token not found');
             return;
         }
-        localStorage.setItem('resetPasswordToken', token);
+        localStorage.setItem('resetLink', this.token);
         // Return if the form is invalid
         if ( this.resetPasswordForm.invalid )
         {
-            return;
+            return console.log("Ghalet");
         }
 
         // Disable the form
-        this.resetPasswordForm.disable();
+        // this.resetPasswordForm.disable();
 
         // Hide the alert
         this.showAlert = false;
-
+console.log(this.resetPasswordForm.get('newPass').value);
         // Send the request to the server
-        this._authService.resetPassword( this.resetPasswordForm.get('password').value)
+        this._authService.resetPassword( this.resetPasswordForm.get('newPass').value)
             .pipe(
                 finalize(() =>
-                {
+                {  
                     // Re-enable the form
                     this.resetPasswordForm.enable();
 
