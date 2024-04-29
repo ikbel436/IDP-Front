@@ -114,7 +114,7 @@ export class ProjectComponent implements OnInit, OnDestroy
     }
     openDialog(): void {
         const dialogRef = this.dialog.open(ProfileUpdateDialogComponent, {
-          width: '1000px',
+          width: '400px',
           // Add any other configuration options for the dialog
         });
     

@@ -1,0 +1,35 @@
+.custom-width-form {
+    width: 100%;
+    max-width: 2000px; /* Ajustez la valeur selon vos besoins */
+}
+.upload-container {
+    text-align: center;
+  }
+  
+  .input-file {
+    display: none;
+  }
+  
+  .upload-preview {
+    margin-top: 20px;
+  }
+  
+  .upload-preview img {
+    max-width: 100%;
+    max-height: 200px;
+  }
+  
+  .upload-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .upload-button:hover {
+    background-color: #0056b3;
+  }
+  

@@ -154,6 +154,7 @@ export class UserComponent implements OnInit, OnDestroy
           (response) => {
             console.log('User status updated successfully:', response);
             this.currentUser.status = status;
+            window.location.reload();
           },
           (error) => {
             console.error('Error updating user status:', error);
