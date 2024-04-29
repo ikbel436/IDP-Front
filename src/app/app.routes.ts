@@ -72,7 +72,7 @@ export const appRoutes: Route[] = [
     {
         path: '',
         canActivate: [AuthGuard],
-       // canActivateChild: [AuthGuard],
+        canActivateChild: [AuthGuard],
         component: LayoutComponent,
         resolve: {
             initialData: initialDataResolver
@@ -81,7 +81,7 @@ export const appRoutes: Route[] = [
 
             // Dashboards
             {path: 'dashboards',
-            canActivate: [AdminGuard],
+           // canActivate: [AdminGuard],
              children: [
                 {path: 'project', loadChildren: () => import('app/modules/admin/dashboards/project/project.routes')},
                 {path: 'analytics', loadChildren: () => import('app/modules/admin/dashboards/analytics/analytics.routes')},
@@ -91,7 +91,7 @@ export const appRoutes: Route[] = [
 
             // Apps
             {path: 'apps',
-            canActivate: [ClientGuard],
+           // canActivate: [ClientGuard],
             //canActivateChild: [ClientGuard],
              children: [
                 {path: 'academy', loadChildren: () => import('app/modules/admin/apps/academy/academy.routes')},

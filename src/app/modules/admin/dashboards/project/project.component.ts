@@ -52,18 +52,22 @@ export class ProjectComponent implements OnInit, OnDestroy
     // @ Lifecycle hooks
     // -----------------------------------------------------------------------------------------------------
     currentUser: any;
+    imageUrl: string;
     /**
      * On init
      */
     ngOnInit(): void
-    { this.userService.get().subscribe(
-        user => {
-          this.currentUser = user;
-        },
-        error => {
-          console.error('Error fetching current user:', error);
-        }
-      );
+    { 
+        this.userService.get().subscribe(
+            user => {
+              this.currentUser = user;
+              // Appel à fetchImage une fois que currentUser est défini
+              this.fetchImage(this.currentUser?.image); // Utilisation de ?. pour éviter les erreurs si currentUser est undefined
+            },
+            error => {
+              console.error('Error fetching current user:', error);
+            }
+        );
         // Get the data
         this._projectService.data$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -91,10 +95,26 @@ export class ProjectComponent implements OnInit, OnDestroy
                 },
             },
         };
+      //  this.fetchImage(this.currentUser.image);
+    }
+   
+    fetchImage(imageName: string): void {
+        // Vérifier si imageName est défini avant d'appeler userService.getImage
+        if (imageName) {
+            this.userService.getImage(imageName).subscribe(
+                (image: Blob) => {
+                  // Créez une URL d'objet pour afficher l'image
+                  this.imageUrl = URL.createObjectURL(image);
+                },
+                (error) => {
+                  console.error('Error fetching image:', error);
+                }
+            );
+        }
     }
     openDialog(): void {
         const dialogRef = this.dialog.open(ProfileUpdateDialogComponent, {
-          width: '400px',
+          width: '1000px',
           // Add any other configuration options for the dialog
         });
     

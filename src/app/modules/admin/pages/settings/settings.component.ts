@@ -10,6 +10,7 @@ import { SettingsNotificationsComponent } from './notifications/notifications.co
 import { SettingsPlanBillingComponent } from './plan-billing/plan-billing.component';
 import { SettingsSecurityComponent } from './security/security.component';
 import { SettingsTeamComponent } from './team/team.component';
+import { UserService } from 'app/core/user/user.service';
 
 @Component({
     selector       : 'settings',
@@ -27,12 +28,16 @@ export class SettingsComponent implements OnInit, OnDestroy
     panels: any[] = [];
     selectedPanel: string = 'account';
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-
+    user: any; // Initialize with the user's data
+    newName: string;
+    newEmail: string;
+    newPhoneNumber: string;
     /**
      * Constructor
      */
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
+        private userService: UserService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
     )
     {
@@ -46,7 +51,7 @@ export class SettingsComponent implements OnInit, OnDestroy
      * On init
      */
     ngOnInit(): void
-    {
+    { this.getUserData();
         // Setup available panels
         this.panels = [
             {
@@ -153,4 +158,18 @@ export class SettingsComponent implements OnInit, OnDestroy
     {
         return item.id || index;
     }
+    getUserData(): void {
+        this.userService.get().subscribe(
+          (response) => {
+            this.user = response;
+            // Initialize form fields with old values
+            this.newName = this.user.name;
+            this.newEmail = this.user.email;
+            this.newPhoneNumber = this.user.phoneNumber;
+          },
+          (error) => {
+            console.error('Error fetching user data:', error);
+          }
+        );
+      }
 }

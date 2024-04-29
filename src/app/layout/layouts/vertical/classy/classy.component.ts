@@ -67,9 +67,24 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy
     /**
      * On init
      */
+    currentUser: any 
+    imageUrl: string;
     ngOnInit(): void
-    {
-        // Subscribe to navigation data
+    { 
+        this._userService.get().subscribe(
+            user => {
+              this.currentUser = user;
+              // Appel à fetchImage une fois que currentUser est défini
+              this.fetchImage(this.currentUser?.image); // Utilisation de ?. pour éviter les erreurs si currentUser est undefined
+            },
+            error => {
+              console.error('Error fetching current user:', error);
+            }
+        );
+    
+    
+    
+        //Subscribe to navigation data
         this._navigationService.navigation$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((navigation: Navigation) =>
@@ -77,7 +92,7 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy
                 this.navigation = navigation;
             });
 
-        // Subscribe to the user service
+        //Subscribe to the user service
         this._userService.user$
             .pipe((takeUntil(this._unsubscribeAll)))
             .subscribe((user: User) =>
@@ -85,7 +100,7 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy
                 this.user = user;
             });
 
-        // Subscribe to media changes
+       // Subscribe to media changes
         this._fuseMediaWatcherService.onMediaChange$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(({matchingAliases}) =>
@@ -93,8 +108,23 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy
                 // Check if the screen is small
                 this.isScreenSmall = !matchingAliases.includes('md');
             });
+           // this.fetchImage(this.currentUser.image);
     }
-
+  
+    fetchImage(imageName: string): void {
+        // Vérifier si imageName est défini avant d'appeler userService.getImage
+        if (imageName) {
+            this._userService.getImage(imageName).subscribe(
+                (image: Blob) => {
+                  // Créez une URL d'objet pour afficher l'image
+                  this.imageUrl = URL.createObjectURL(image);
+                },
+                (error) => {
+                  console.error('Error fetching image:', error);
+                }
+            );
+        }
+    }
     /**
      * On destroy
      */
@@ -102,7 +132,7 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy
     {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next(null);
-        this._unsubscribeAll.complete();
+       this._unsubscribeAll.complete();
     }
 
     // -----------------------------------------------------------------------------------------------------

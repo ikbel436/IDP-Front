@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 export const AuthGuard: CanActivateFn | CanActivateChildFn = (route, state) =>
 {
     const router: Router = inject(Router);
-    const authService: AuthService = inject(AuthService);
+
     // Check the authentication status
     return inject(AuthService).check().pipe(
         switchMap((authenticated) =>
@@ -23,12 +23,7 @@ export const AuthGuard: CanActivateFn | CanActivateChildFn = (route, state) =>
 
                 return of(urlTree);
             }
-            const userRole = authService.getUserRole();
-            if (userRole === 'admin' && route.data.role && route.data.role !== 'admin') {
-              // If the user is an admin but the route is not for admins, redirect or deny access
-              return of(false);
-            }
-      
+
             // Allow the access
             return of(true);
         }),

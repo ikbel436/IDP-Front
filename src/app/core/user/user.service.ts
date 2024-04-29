@@ -15,11 +15,38 @@ export class UserService
     constructor(private _httpClient: HttpClient)
     {
     }
-
+    getImage(imageName: string ): Observable<Blob> {
+      const userId = this.getUserID();
+      //const imageName = this.getImageid();
+      return new Observable<Blob>(observer => {
+        fetch(`${this.apiUrl}/image/${userId}/${imageName}`)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.blob();
+          })
+          .then(blob => {
+            observer.next(blob);
+            observer.complete();
+          })
+          .catch(error => {
+            observer.error(error);
+          });
+      });
+    }
+    getImage1(): Observable<Blob> {
+      const userId = this.getUserID();
+     const imageName = this.getImageid();
+      return this._httpClient.get(`${this.apiUrl}/image/${userId}/${imageName}`, { responseType: 'blob' });
+    }
     // -----------------------------------------------------------------------------------------------------
     // @ Accessors
     // -----------------------------------------------------------------------------------------------------
-
+    updateUserStatus( status: string): Observable<any> {
+      const userId = this.getUserID();
+      return this._httpClient.put<any>(`${this.apiUrl}/profile/${userId}`, { status });
+    }
     /**
      * Setter & getter for user
      *
@@ -35,7 +62,26 @@ export class UserService
     {        
         return this._user.asObservable();
     }
-    
+    getUserID(): string {
+        const token = localStorage.getItem('accessToken');
+        if (token) {
+          const decodedToken = JSON.parse(atob(token.split('.')[1]));
+          return decodedToken.id;
+        } else {
+          console.error('Token not found in local storage.');
+          return null;
+        }
+      }
+      getImageid(): string {
+        const token = localStorage.getItem('accessToken');
+        if (token) {
+          const decodedToken = JSON.parse(atob(token.split('.')[1]));
+          return decodedToken.image;
+        } else {
+          console.error('Token not found in local storage.');
+          return null;
+        }
+      }
     token = localStorage.getItem('accessToken');
 
     // -----------------------------------------------------------------------------------------------------
@@ -72,18 +118,23 @@ export class UserService
 
 
   
-    /**
-     * Update the user
-     *
-     * @param user
-     */
-    update(user: User): Observable<any>
-    {
-        return this._httpClient.patch<User>('api/common/user', {user}).pipe(
-            map((response) =>
-            {
-                this._user.next(response);
-            }),
+    update(user: any): Observable<any> {
+        const userId = this.getUserID();
+        return this._httpClient.put<User>(`${this.apiUrl}/profile/${userId}`, user).pipe(
+          map((response) => {
+            this._user.next(response);
+          }),
         );
-    }
+      }
+
+    
+      uploadImage(image: File): Observable<any> {
+        // Extract user ID from token
+        const userId = this.getUserID();
+      
+        const formData = new FormData();
+        formData.append('image', image); // Make sure 'image' matches the field name expected by the backend
+      
+        return this._httpClient.put<any>(`${this.apiUrl}/upload/${userId}`, formData);
+      }
 }
