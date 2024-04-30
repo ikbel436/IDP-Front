@@ -12,6 +12,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
+import { ProjectService } from '../project.service';
+import { Router } from '@angular/router';
  
 @Component({
   selector: 'app-profile-update-dialog',
@@ -23,32 +25,35 @@ import { MatSelectModule } from '@angular/material/select';
 export class ProfileUpdateDialogComponent {
  // userId: string; // Initialize with the user's ID
   user: any; // Initialize with the user's data
-  newName: string;
-  newEmail: string;
-  newPhoneNumber: string;
+  
+  name: string;
+  description: string;
+  lien: string;
+  provider: string;
+
   constructor(
    
     public dialogRef: MatDialogRef<ProfileUpdateDialogComponent>,
-    private userService: UserService
+    private userService: UserService,
+    private projectService: ProjectService,private router: Router
   ) { }
   ngOnInit(): void {
     // Fetch user data when the component initializes
    // const userId = localStorage.getItem('id');// Assign the user's ID
   //  this.getUserData();
   }
-
-  getUserData(): void {
-    this.userService.get().subscribe(
-      (response) => {
-        this.user = response;
-        // Initialize form fields with old values
-        this.newName = this.user.name;
-        this.newEmail = this.user.email;
-        this.newPhoneNumber = this.user.phoneNumber;
-      },
-      (error) => {
-        console.error('Error fetching user data:', error);
-      }
-    );
+  createProject(): void {
+    this.projectService.createProject(this.name, this.description,this.provider,this.lien)
+      .subscribe(
+        response => {
+          console.log('Project created successfully:', response);
+          this.router.navigateByUrl('/dashboards/project');
+        },
+        error => {
+          console.error('Error creating project:', error);
+          // Gérer l'erreur
+        }
+      );
   }
+ 
 }

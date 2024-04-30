@@ -74,6 +74,7 @@ export class UserComponent implements OnInit, OnDestroy
     ngOnInit(): void {
         this._userService.get().subscribe(
           (user: User) => {
+            console.log(user)
             this.currentUser = user;
           },
           (error) => {
@@ -154,6 +155,7 @@ export class UserComponent implements OnInit, OnDestroy
           (response) => {
             console.log('User status updated successfully:', response);
             this.currentUser.status = status;
+            window.location.reload();
           },
           (error) => {
             console.error('Error updating user status:', error);

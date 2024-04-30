@@ -17,6 +17,7 @@ import { UserService } from 'app/core/user/user.service';
 @Component({
     selector     : 'forms-fields',
     templateUrl  : './fields.component.html',
+    styleUrls: [ './fields.component.css' ],
     encapsulation: ViewEncapsulation.None,
     standalone   : true,
     imports      : [MatIconModule, FormsModule, MatFormFieldModule, NgClass, MatInputModule, TextFieldModule, ReactiveFormsModule, MatButtonToggleModule, MatButtonModule, MatSelectModule, MatOptionModule, MatChipsModule, MatDatepickerModule],
@@ -32,6 +33,7 @@ export class FormsFieldsComponent
     name: string;
     email: string;
     phoneNumber: string;
+    description: string
     images;
     title = 'fileUpload';
     /**
@@ -40,7 +42,17 @@ export class FormsFieldsComponent
     constructor(private _formBuilder: UntypedFormBuilder,private userService: UserService,private _httpClient: HttpClient)
     {
     }
+    currentUser : any 
     ngOnInit(): void {
+      // this.userService.get().subscribe(
+      //   user => {
+      //     this.currentUser = user;
+      //     this.fetchImage(this.currentUser?.image);
+      //   },
+      //   error => {
+      //     console.error('Error fetching current user:', error);
+      //   }
+      // );
        // const id= localStorage.getItem('id');
        // console.log(id);
         this.getUserData();
@@ -59,6 +71,7 @@ export class FormsFieldsComponent
             this.name = this.user.name;
             this.email = this.user.email;
             this.phoneNumber = this.user.phoneNumber;
+            this.description = this.user.description;
           },
           (error) => {
             console.error('Error fetching user data:', error);
@@ -70,18 +83,21 @@ export class FormsFieldsComponent
         const updatedUser = {
           name: this.name,
           email: this.email,
-          phoneNumber: this.phoneNumber
+          phoneNumber: this.phoneNumber,
+          description: this.description
         };
     
         // Call the service method to update user info
         this.userService.update(updatedUser).subscribe(
           (response) => {
             console.log('User updated successfully:', response);
-            // Handle success response
+            this.getUserData();
+            this.currentUser =response 
+            window.location.reload();
           },
           (error) => {
             console.error('Error updating user:', error);
-            // Handle error response
+           
           }
         );
       }
@@ -89,6 +105,17 @@ export class FormsFieldsComponent
         if (event.target.files.length > 0) {
           const file = event.target.files[0];
           this.images = file;
+        }
+      }
+      selectedImage: any 
+      selectImage1(event) {
+        if (event.target.files.length > 0) {
+          const file = event.target.files[0];
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            this.selectedImage = e.target.result as string;
+          };
+          reader.readAsDataURL(file);
         }
       }
       getUserID(): string {
@@ -127,6 +154,21 @@ export class FormsFieldsComponent
           );
         }
       }
+      imageUrl: string;
+      fetchImage(imageName: string): void {
+        // Vérifier si imageName est défini avant d'appeler userService.getImage
+        if (imageName) {
+            this.userService.getImage(imageName).subscribe(
+                (image: Blob) => {
+                  // Créez une URL d'objet pour afficher l'image
+                  this.imageUrl = URL.createObjectURL(image);
+                },
+                (error) => {
+                  console.error('Error fetching image:', error);
+                }
+            );
+        }
+    }
     /**
      * Get the form field helpers as string
      */

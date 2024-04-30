@@ -82,7 +82,12 @@ export class UserService
           return null;
         }
       }
-    token = localStorage.getItem('accessToken');
+      get accessToken(): string
+      {
+          return localStorage.getItem('accessToken') ?? '';
+      }
+  
+    token = this.accessToken;
 
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
@@ -92,7 +97,8 @@ export class UserService
      * Get the current logged in user data
      */
     get(): Observable<User>
-    {   const url = `${this.apiUrl}/current`;
+    {   
+      const url = `${this.apiUrl}/current`;
     const headers = new HttpHeaders({
         'Authorization': `Bearer ${this.token}` // Remplacez `votreToken` par votre véritable token
     });

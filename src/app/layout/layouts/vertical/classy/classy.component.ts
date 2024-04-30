@@ -67,49 +67,44 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy
     /**
      * On init
      */
-    currentUser: any 
+    currentUser: User; 
     imageUrl: string;
-    ngOnInit(): void
-    { 
-        this._userService.get().subscribe(
-            user => {
-              this.currentUser = user;
-              // Appel à fetchImage une fois que currentUser est défini
-              this.fetchImage(this.currentUser?.image); // Utilisation de ?. pour éviter les erreurs si currentUser est undefined
-            },
-            error => {
-              console.error('Error fetching current user:', error);
-            }
-        );
+    ngOnInit(): void {
+        // this._userService.get().subscribe(
+        //     user => {
+        //         this.currentUser = user;
+        //         // Call fetchImage once currentUser is defined
+        //         this.fetchImage(this.currentUser?.avatar); // Use optional chaining to avoid errors if currentUser is undefined
+        //     },
+        //     error => {
+        //         console.error('Error fetching current user:', error);
+        //     }
+        // );
     
-    
-    
-        //Subscribe to navigation data
+        // Subscribe to navigation data
         this._navigationService.navigation$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((navigation: Navigation) =>
-            {
+            .subscribe((navigation: Navigation) => {
                 this.navigation = navigation;
             });
-
-        //Subscribe to the user service
+    
+        // Subscribe to the user service
         this._userService.user$
-            .pipe((takeUntil(this._unsubscribeAll)))
-            .subscribe((user: User) =>
-            {
-                this.user = user;
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((user: User) => {
+                this.currentUser = user;
+                this.fetchImage(this.currentUser?.avatar);
             });
-
-       // Subscribe to media changes
+    
+        // Subscribe to media changes
         this._fuseMediaWatcherService.onMediaChange$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe(({matchingAliases}) =>
-            {
+            .subscribe(({matchingAliases}) => {
                 // Check if the screen is small
                 this.isScreenSmall = !matchingAliases.includes('md');
             });
-           // this.fetchImage(this.currentUser.image);
     }
+    
   
     fetchImage(imageName: string): void {
         // Vérifier si imageName est défini avant d'appeler userService.getImage

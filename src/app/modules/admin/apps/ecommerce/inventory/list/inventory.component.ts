@@ -48,7 +48,7 @@ import { debounceTime, map, merge, Observable, Subject, switchMap, takeUntil } f
     imports        : [NgIf, MatProgressBarModule, MatFormFieldModule, MatIconModule, MatInputModule, FormsModule, ReactiveFormsModule, MatButtonModule, MatSortModule, NgFor, NgTemplateOutlet, MatPaginatorModule, NgClass, MatSlideToggleModule, MatSelectModule, MatOptionModule, MatCheckboxModule, MatRippleModule, AsyncPipe, CurrencyPipe],
 })
 export class InventoryListComponent implements OnInit, AfterViewInit, OnDestroy
-{
+{  projects: any[] = [];
     @ViewChild(MatPaginator) private _paginator: MatPaginator;
     @ViewChild(MatSort) private _sort: MatSort;
 
@@ -88,7 +88,7 @@ export class InventoryListComponent implements OnInit, AfterViewInit, OnDestroy
      * On init
      */
     ngOnInit(): void
-    {
+    {  //this.fetchProjects();
         // Create the selected product form
         this.selectedProductForm = this._formBuilder.group({
             id               : [''],
@@ -194,8 +194,20 @@ export class InventoryListComponent implements OnInit, AfterViewInit, OnDestroy
                 }),
             )
             .subscribe();
+            
     }
-
+    fetchProjects(): void {
+        this._inventoryService.getProjects()
+          .subscribe(
+            (response) => {
+              this.projects = response.projects;
+            },
+            (error) => {
+              console.error('Error fetching projects:', error);
+              // Handle error
+            }
+          );
+      }
     /**
      * After view init
      */

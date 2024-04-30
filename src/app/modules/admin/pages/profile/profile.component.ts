@@ -34,13 +34,13 @@ export class ProfileComponent
      */
     ngOnInit(): void
      { 
-      //this.userService.get().subscribe(
-    //     user => {
-    //       this.currentUser = user;
-    //     },
-    //     error => {
-    //       console.error('Error fetching current user:', error);
-    //     }
-    //   );
+      this.userService.get().subscribe(
+        user => {
+          this.currentUser = user;
+        },
+        error => {
+          console.error('Error fetching current user:', error);
+        }
+      );
      }
 }
