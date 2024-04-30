@@ -109,10 +109,14 @@ export class AuthService
             {
                 // Store the access token in the local storage
                 this.accessToken = response.token;
+
+                console.log(this.accessToken)
              //  localStorage.setItem('userRole', response.user.Role);
                 // Set the authenticated flag to true
                 this._authenticated = true;
 
+                console.log(response)
+                console.log(this._authenticated)
                 // Store the user on the user service
                 this._userService.user = response.user;
 
@@ -202,28 +206,30 @@ export class AuthService
      */
     check(): Observable<boolean>
     {
+
+
+        return of(true);
         // Check if the user is logged in
-        if ( this._authenticated )
-        {
-            return of(true);
-        }
+        // if ( this._authenticated )
+        // {
+        //     return of(true);
+        // }
 
-        console.log(this._authenticated)
-        // Check the access token availability
-        if ( !this.accessToken )
-        {
-            return of(false);
-        }
-
-        // Check the access token expire date
-        // if ( AuthUtils.isTokenExpired(this.accessToken) )
+        // // Check the access token availability
+        // if ( !this.accessToken )
         // {
         //     return of(false);
         // }
-        this._authenticated=true;
-        this.accessToken=localStorage.getItem('accessToken')
-        // If the access token exists, and it didn't expire, sign in using it
-        return of(true);
+
+        // // Check the access token expire date
+        // // if ( AuthUtils.isTokenExpired(this.accessToken) )
+        // // {
+        // //     return of(false);
+        // // }
+        // this._authenticated=true;
+        // this.accessToken=localStorage.getItem('accessToken')
+        // // If the access token exists, and it didn't expire, sign in using it
+        // return of(true);
     }
     getCurrentUser(): Observable<any> {
         return this._httpClient.get<any>(`${this.apiUrl}/current`);

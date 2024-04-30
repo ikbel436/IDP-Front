@@ -5,7 +5,7 @@ import { BehaviorSubject, filter, map, Observable, of, switchMap, take, tap, thr
 
 @Injectable({providedIn: 'root'})
 export class InventoryService
-{
+{private apiUrl = 'http://localhost:3000/project'; 
     // Private
     private _brands: BehaviorSubject<InventoryBrand[] | null> = new BehaviorSubject(null);
     private _categories: BehaviorSubject<InventoryCategory[] | null> = new BehaviorSubject(null);
@@ -21,7 +21,10 @@ export class InventoryService
     constructor(private _httpClient: HttpClient)
     {
     }
-
+   
+    getProjects(): Observable<any> {
+        return this._httpClient.get<any>(`${this.apiUrl}/get`);
+      }
     // -----------------------------------------------------------------------------------------------------
     // @ Accessors
     // -----------------------------------------------------------------------------------------------------

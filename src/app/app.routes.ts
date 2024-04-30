@@ -26,8 +26,8 @@ export const appRoutes: Route[] = [
     // Auth routes for guests
     {
         path: '',
-        canActivate: [NoAuthGuard],
-        canActivateChild: [NoAuthGuard],
+        // canActivate: [NoAuthGuard],
+        // canActivateChild: [NoAuthGuard],
         component: LayoutComponent,
         data: {
             layout: 'empty'
@@ -44,8 +44,8 @@ export const appRoutes: Route[] = [
     // Auth routes for authenticated users
     {
         path: '',
-        canActivate: [AuthGuard],
-        canActivateChild: [AuthGuard],
+        // canActivate: [AuthGuard],
+        // canActivateChild: [AuthGuard],
         component: LayoutComponent,
         data: {
             layout: 'empty'
@@ -68,11 +68,11 @@ export const appRoutes: Route[] = [
         ]
     },
 
-    // Admin routes
+    // // Admin routes
     {
         path: '',
-        canActivate: [AuthGuard],
-        canActivateChild: [AuthGuard],
+        // canActivate: [AuthGuard],
+        // canActivateChild: [AuthGuard],
         component: LayoutComponent,
         resolve: {
             initialData: initialDataResolver
@@ -81,7 +81,7 @@ export const appRoutes: Route[] = [
 
             // Dashboards
             {path: 'dashboards',
-           // canActivate: [AdminGuard],
+           
              children: [
                 {path: 'project', loadChildren: () => import('app/modules/admin/dashboards/project/project.routes')},
                 {path: 'analytics', loadChildren: () => import('app/modules/admin/dashboards/analytics/analytics.routes')},
@@ -91,7 +91,7 @@ export const appRoutes: Route[] = [
 
             // Apps
             {path: 'apps',
-           // canActivate: [ClientGuard],
+           canActivate: [ClientGuard],
             //canActivateChild: [ClientGuard],
              children: [
                 {path: 'academy', loadChildren: () => import('app/modules/admin/apps/academy/academy.routes')},
