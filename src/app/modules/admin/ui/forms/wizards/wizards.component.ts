@@ -10,24 +10,26 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
+import { TerraformService } from '@fuse/services/terraform/terraform.service';
 import { UserService } from 'app/core/user/user.service';
-
+import { CommonModule } from '@angular/common';
 @Component({
     selector     : 'forms-wizards',
     templateUrl  : './wizards.component.html',
     encapsulation: ViewEncapsulation.None,
     standalone   : true,
-    imports      : [MatIconModule, FormsModule, ReactiveFormsModule, MatStepperModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatOptionModule, MatButtonModule, MatCheckboxModule, MatRadioModule],
+    imports      : [MatIconModule, FormsModule,CommonModule, ReactiveFormsModule, MatStepperModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatOptionModule, MatButtonModule, MatCheckboxModule, MatRadioModule],
 })
 export class FormsWizardsComponent implements OnInit
 {
     horizontalStepperForm: UntypedFormGroup;
     verticalStepperForm: UntypedFormGroup;
-
+    showEc2Config = false;
+    showS3Config = false;
     /**
      * Constructor
      */
-    constructor(private _formBuilder: UntypedFormBuilder,private userService: UserService,private _httpClient: HttpClient)
+    constructor(private _formBuilder: UntypedFormBuilder,private userService: UserService,private _httpClient: HttpClient,private  terraformService: TerraformService)
     
     {
     }
@@ -60,23 +62,20 @@ export class FormsWizardsComponent implements OnInit
         // Horizontal stepper form
         this.horizontalStepperForm = this._formBuilder.group({
             step1: this._formBuilder.group({
-                email   : ['', [Validators.required, Validators.email]],
-                country : ['', Validators.required],
-                language: ['', Validators.required],
+              ec2Selected: [false],
+              s3Selected: [false]
             }),
             step2: this._formBuilder.group({
-                firstName: ['', Validators.required],
-                lastName : ['', Validators.required],
-                userName : ['', Validators.required],
-                about    : [''],
+              region: ['', Validators.required],
+              ami: ['', Validators.required],
+              instance_type: ['', Validators.required],
+              name: ['', Validators.required]
             }),
             step3: this._formBuilder.group({
-                byEmail          : this._formBuilder.group({
-                    companyNews     : [true],
-                    featuredProducts: [false],
-                    messages        : [true],
-                }),
-                pushNotifications: ['everything', Validators.required],
+              
+                  s3BucketName: ['', Validators.required]
+              
+               
             }),
         });
 
@@ -153,16 +152,38 @@ export class FormsWizardsComponent implements OnInit
           return null;
         }
       }
-      onSubmit(){
 
-        const userId = this.getUserID();
-        const formData = new FormData();
-        formData.append('file', this.images);
-    
-        this._httpClient.put<any>(`http://localhost:3000/auth/upload/${userId}`, formData).subscribe(
-          (res) => console.log(res),
-          (err) => console.log(err)
-        );
+      onSubmit() {
+        const step1Data = this.horizontalStepperForm.get('step1').value;
+        const step2Data = this.horizontalStepperForm.get('step2').value;
+        const step3Data = this.horizontalStepperForm.get('step3').value;
+        const configs = {
+          region: step2Data.region,
+          ami: step2Data.ami,
+          instance_type: step2Data.instance_type,
+          name: step2Data.name,
+          generateS3Module: step1Data.s3Selected,
+          s3BucketName: step3Data.s3BucketName,
+          ec2Instance: step1Data.ec2Selected
+        };
+        if (this.horizontalStepperForm.valid) {
+          const formData = this.horizontalStepperForm.value;
+          this.terraformService.generateTerraform(configs)
+            .subscribe(
+              (response) => {
+                console.log('Terraform configuration generated:', response);
+                // Optionally, reset the form after successful submission
+                this.horizontalStepperForm.reset();
+              },
+              (error) => {
+                console.error('Error generating Terraform configuration:', error);
+                // Handle error
+              }
+            );
+        } else {
+          // Mark all form fields as touched to display validation errors
+          this.horizontalStepperForm.markAllAsTouched();
+        }
       }
       onFileSelected(files: FileList): void {
         if (files.length > 0) {

@@ -91,7 +91,7 @@ export const appRoutes: Route[] = [
 
             // Apps
             {path: 'apps',
-           canActivate: [ClientGuard],
+          
             //canActivateChild: [ClientGuard],
              children: [
                 {path: 'academy', loadChildren: () => import('app/modules/admin/apps/academy/academy.routes')},

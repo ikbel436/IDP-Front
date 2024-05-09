@@ -56,8 +56,9 @@ export class ProjectComponent implements OnInit, OnDestroy
     /**
      * On init
      */
+    projects: any[] = [];
     ngOnInit(): void
-    { 
+    { this.fetchProjects();
         this.userService.get().subscribe(
             user => {
               this.currentUser = user;
@@ -97,7 +98,18 @@ export class ProjectComponent implements OnInit, OnDestroy
         };
       //  this.fetchImage(this.currentUser.image);
     }
-   
+    fetchProjects(): void {
+        this._projectService.getProjects()
+          .subscribe(
+            (response) => {
+              this.projects = response.projects;
+            },
+            (error) => {
+              console.error('Error fetching projects:', error);
+              // Handle error
+            }
+          );
+      }
     fetchImage(imageName: string): void {
         // Vérifier si imageName est défini avant d'appeler userService.getImage
         if (imageName) {

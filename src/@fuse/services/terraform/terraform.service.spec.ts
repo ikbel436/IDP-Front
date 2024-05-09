@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { SignUpService } from './sign-up.service';
+import { TerraformService } from './terraform.service';
 
 describe('SignUpService', () => {
-  let service: SignUpService;
+  let service: TerraformService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(SignUpService);
+    service = TestBed.inject(TerraformService);
   });
 
   it('should be created', () => {

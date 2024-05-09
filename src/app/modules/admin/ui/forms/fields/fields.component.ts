@@ -44,15 +44,15 @@ export class FormsFieldsComponent
     }
     currentUser : any 
     ngOnInit(): void {
-      // this.userService.get().subscribe(
-      //   user => {
-      //     this.currentUser = user;
-      //     this.fetchImage(this.currentUser?.image);
-      //   },
-      //   error => {
-      //     console.error('Error fetching current user:', error);
-      //   }
-      // );
+      this.userService.get().subscribe(
+        user => {
+          this.currentUser = user;
+          this.fetchImage(this.currentUser?.image);
+        },
+        error => {
+          console.error('Error fetching current user:', error);
+        }
+      );
        // const id= localStorage.getItem('id');
        // console.log(id);
         this.getUserData();

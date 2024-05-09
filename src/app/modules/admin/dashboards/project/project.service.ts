@@ -17,6 +17,9 @@ export class ProjectService
     {
         return localStorage.getItem('accessToken') ?? '';
     }
+    getProjects(): Observable<any> {
+        return this._httpClient.get<any>(`${this.apiUrl}/get`);
+      }
     createProject(name: string, description: string,  provider: string,
         lien:string): Observable<any> {
         const token = this.accessToken; // Récupérez le token JWT de localStorage ou d'où vous le stockez

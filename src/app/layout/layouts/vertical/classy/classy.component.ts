@@ -67,19 +67,19 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy
     /**
      * On init
      */
-    currentUser: User; 
+    currentUser: any; 
     imageUrl: string;
     ngOnInit(): void {
-        // this._userService.get().subscribe(
-        //     user => {
-        //         this.currentUser = user;
-        //         // Call fetchImage once currentUser is defined
-        //         this.fetchImage(this.currentUser?.avatar); // Use optional chaining to avoid errors if currentUser is undefined
-        //     },
-        //     error => {
-        //         console.error('Error fetching current user:', error);
-        //     }
-        // );
+        this._userService.get().subscribe(
+            user => {
+                this.currentUser = user;
+                // Call fetchImage once currentUser is defined
+                this.fetchImage(this.currentUser?.image); // Use optional chaining to avoid errors if currentUser is undefined
+            },
+            error => {
+                console.error('Error fetching current user:', error);
+            }
+        );
     
         // Subscribe to navigation data
         this._navigationService.navigation$

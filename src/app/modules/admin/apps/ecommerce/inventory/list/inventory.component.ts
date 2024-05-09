@@ -48,7 +48,7 @@ import { debounceTime, map, merge, Observable, Subject, switchMap, takeUntil } f
     imports        : [NgIf, MatProgressBarModule, MatFormFieldModule, MatIconModule, MatInputModule, FormsModule, ReactiveFormsModule, MatButtonModule, MatSortModule, NgFor, NgTemplateOutlet, MatPaginatorModule, NgClass, MatSlideToggleModule, MatSelectModule, MatOptionModule, MatCheckboxModule, MatRippleModule, AsyncPipe, CurrencyPipe],
 })
 export class InventoryListComponent implements OnInit, AfterViewInit, OnDestroy
-{  projects: any[] = [];
+{  
     @ViewChild(MatPaginator) private _paginator: MatPaginator;
     @ViewChild(MatSort) private _sort: MatSort;
 
@@ -87,30 +87,33 @@ export class InventoryListComponent implements OnInit, AfterViewInit, OnDestroy
     /**
      * On init
      */
+    projects: any[] = [];
     ngOnInit(): void
-    {  //this.fetchProjects();
+    {     this.fetchProjects();
+        
+      
         // Create the selected product form
         this.selectedProductForm = this._formBuilder.group({
-            id               : [''],
-            category         : [''],
+            // id               : [''],
+            // category         : [''],
             name             : ['', [Validators.required]],
             description      : [''],
-            tags             : [[]],
-            sku              : [''],
-            barcode          : [''],
-            brand            : [''],
-            vendor           : [''],
-            stock            : [''],
-            reserved         : [''],
-            cost             : [''],
-            basePrice        : [''],
-            taxPercent       : [''],
-            price            : [''],
-            weight           : [''],
-            thumbnail        : [''],
-            images           : [[]],
-            currentImageIndex: [0], // Image index that is currently being viewed
-            active           : [false],
+            // tags             : [[]],
+            // sku              : [''],
+            // barcode          : [''],
+            // brand            : [''],
+            // vendor           : [''],
+            // stock            : [''],
+            // reserved         : [''],
+            // cost             : [''],
+            reference        : [''],
+            provider       : [''],
+            lien            : [''],
+            // weight           : [''],
+            // thumbnail        : [''],
+            // images           : [[]],
+            // currentImageIndex: [0], // Image index that is currently being viewed
+            // active           : [false],
         });
 
         // Get the brands
@@ -208,6 +211,7 @@ export class InventoryListComponent implements OnInit, AfterViewInit, OnDestroy
             }
           );
       }
+    
     /**
      * After view init
      */
